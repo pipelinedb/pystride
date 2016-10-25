@@ -35,8 +35,8 @@ setup(
         'pytest-runner>=2.9'
     ],
     tests_require=[
-        'flask>=0.10.1',
         'pytest>=2.6.3',
+        'responses>=0.5.1'
     ],
     description='Python client for Stride',
     long_description=long_description,
