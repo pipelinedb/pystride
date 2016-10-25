@@ -52,10 +52,9 @@ class Stride(object):
     Stride is the wrapper for the Stride API client
     '''
 
-    def __init__(self, api_key, timeout=5, endpoint=api_endpoint):
+    def __init__(self, api_key, timeout=5):
         self.api_key = api_key
         self._timeout = timeout
-        self._endpoint = endpoint
 
     def _get_request_kwargs(self):
         return {
@@ -76,7 +75,7 @@ class Stride(object):
             kwargs['json'] = data
 
         fn = getattr(requests, method)
-        r = fn('%s%s' % (self._endpoint, path), **kwargs)
+        r = fn('%s%s' % (api_endpoint, path), **kwargs)
         data = r.json() if r.text else None
         return StrideResponse(r.status_code, data=data)
 
@@ -99,7 +98,7 @@ class Stride(object):
         kwargs = self._get_request_kwargs()
         kwargs['stream'] = True
 
-        r = requests.get('%s%s' % (self._endpoint, path), **kwargs)
+        r = requests.get('%s%s/subscribe' % (api_endpoint, path), **kwargs)
 
         if r.status_code != requests.codes.ok:
             data = r.json() if r.text else None
