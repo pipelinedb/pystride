@@ -29,6 +29,9 @@ def set_id(event, _id=None):
 
 
 class Collector(object):
+    '''
+    Collector is an asynchronous batching collector for the Stride API
+    '''
     _collect_kwargs = {'block', 'timeout'}
 
     def __init__(self, api_key, timeout=5, flush_interval=0.25,

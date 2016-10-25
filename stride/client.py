@@ -49,7 +49,7 @@ class StrideResponse(object):
 
 class Stride(object):
     '''
-    Stride is the wrapper for the Stride API client
+    Stride is the wrapper for the Stride API
     '''
 
     def __init__(self, api_key, timeout=5):
