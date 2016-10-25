@@ -1,0 +1,2 @@
+class StrideError(Exception):
+    pass
