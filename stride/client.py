@@ -1,3 +1,4 @@
+from collections import namedtuple
 import json
 import re
 import requests
@@ -37,14 +38,7 @@ def check_path(method, path):
                       (path, method))
 
 
-class StrideResponse(object):
-
-    def __init__(self, status_code, data=None):
-        self.status_code = status_code
-        self.data = data
-
-        def ok(self):
-            return self.status_code == 200 or self.status_code == 201
+StrideResponse = namedtuple('StrideResponse', ['status_code', 'data'])
 
 
 class Stride(object):
@@ -78,7 +72,7 @@ class Stride(object):
         fn = getattr(requests, method)
         r = fn('%s%s' % (self._endpoint, path), **kwargs)
         data = r.json() if r.text else None
-        return StrideResponse(r.status_code, data=data)
+        return StrideResponse(r.status_code, data)
 
     def get(self, path):
         return self._make_request('get', path)
@@ -112,4 +106,4 @@ class Stride(object):
                         yield json.loads(line)
             data = events
 
-        return StrideResponse(r.status_code, data=data)
+        return StrideResponse(r.status_code, data)

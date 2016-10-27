@@ -1,5 +1,6 @@
-from stride.client import Stride, StrideError  # noqa
-from stride.collector import Collector, set_id, set_timestamp  # noqa
-from stride.version import VERSION as __version__  # noqa
+from stride.client import Stride, StrideError, StrideResponse
+from stride.collector import Collector, set_id, set_timestamp
+from stride.version import VERSION as __version__
 
-__all__ = ['Collector', 'set_id', 'set_timestamp', 'Stride', 'StrideError']
+__all__ = ['Collector', 'set_id', 'set_timestamp', 'Stride', 'StrideError',
+           'StrideResponse', '__version__']
