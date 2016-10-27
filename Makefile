@@ -14,3 +14,4 @@ installdeps:
 
 clean:
 	find . -type f -name '*.py[cod]' -delete
+	find . -type d -name '__pycache__' -delete

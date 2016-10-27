@@ -35,12 +35,15 @@ class Collector(object):
     _collect_kwargs = {'block', 'timeout'}
 
     def __init__(self, api_key, timeout=5, flush_interval=0.25,
-                 batch_size=1000):
+                 batch_size=1000, endpoint=None):
         self._timeout = timeout
         self._flush_interval = flush_interval
         self._batch_size = batch_size
 
-        self._client = Stride(api_key, timeout=timeout)
+        if endpoint:
+          self._client = Stride(api_key, timeout=timeout, endpoint=endpoint)
+        else:
+          self._client = Stride(api_key, timeout=timeout)
         self._thread = None
         self._queue = Queue.Queue(maxsize=batch_size)
         self._stopped = True
