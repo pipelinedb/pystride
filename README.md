@@ -9,7 +9,12 @@ Welcome to the Python client for Stride.
 pip install stride
 ```
 
-Then in your project:
+The library provides two modules:
+
+* `Stride` - a simple wrapper around the HTTP API
+* `Collector` - an asynchronous collector that batches events and sends them to the server periodically
+
+## Stride
 
 ```python
 from stride import Stride
@@ -19,11 +24,12 @@ stride.post('/collect/mystream', {'bojack': 'horseman'})
 # StrideResponse(status_code=200, data=None)
 ```
 
-There are a few main methods: `get`, `post`, `put`, `delete`, `subscribe`. All methods return a `StrideResponse` object which has two attributes: 
-- `status_code` - the HTTP status code returned by the server 
-- `data` - the JSON object returned by the server, or `None` is response was empty
+There are a few main methods: `get`, `post`, `put`, `delete`, `subscribe`. All methods return a `StrideResponse` object which has two attributes:
 
-## get()
+* `status_code` - the HTTP status code returned by the server
+* `data` - the JSON object returned by the server, or `None` is response was empty
+
+### get()
 
 * `url` - endpoint to `GET` from
 
@@ -34,7 +40,7 @@ stride.get('/collect')
 # StrideResponse(status_code=200, data=['clicks', 'app_events', 'web_logs'])
 ```
 
-## post()
+### post()
 
 * `url` - endpoint to `POST` to
 * `data` - data to post to server
@@ -48,7 +54,7 @@ stride.post('/process/myproc', process)
 # StrideResponse(status_code=200, data=None)
 ```
 
-## put()
+### put()
 
 * `url` - endpoint to `PUT` to
 * `data` - data to post to server
@@ -61,7 +67,7 @@ stride.put('/analyze/myanalyze', analyze)
 # StrideResponse(status_code=200, data=None)
 ```
 
-## delete()
+### delete()
 
 * `url` - endpoint to `DELETE`
 
@@ -70,7 +76,7 @@ stride.delete('/process/myproc')
 # StrideResponse(status_code=200, data=None)
 ```
 
-## subscribe()
+### subscribe()
 
 Due to the streaming nature of `subscribe()`, its usage is a little different compared to other methods. The `data` attribute of the response object is not a `dict` but instead is a `generator` function which will `yield` new events as they arrive.
 
@@ -82,4 +88,20 @@ res = stride.subscribe('/collect/app_events')
 
 for event in res.data():
   do_something(event)
+```
+
+## Collector
+
+```python
+from stride import Collector
+
+# flush_interval: the max time (in seconds) to wait before sending buffered events to the server, default = 0.25
+# batch_size: the max number of events to buffer in memory before flushing, default = 1000
+c = Collector('apikey', flush_interval=0.25, batch_size=1000)
+c.start()
+
+for i in range(100000):
+  c.collect('mystream', {'id': i, 'bojack': 'horseman'})
+
+c.stop()
 ```

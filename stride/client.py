@@ -46,10 +46,10 @@ class Stride(object):
     Stride is the wrapper for the Stride API
     '''
 
-    def __init__(self, api_key, timeout=5, endpoint=api_endpoint):
+    def __init__(self, api_key, timeout=5):
         self.api_key = api_key
         self._timeout = timeout
-        self._endpoint = endpoint
+        self._endpoint = api_endpoint
 
     def _get_request_kwargs(self):
         return {
