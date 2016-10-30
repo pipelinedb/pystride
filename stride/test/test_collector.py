@@ -21,7 +21,6 @@ def rsps():
 
     def collect(request):
         check_request(request)
-        print request.body
         rsps.requests.append(json.loads(request.body))
         headers = {'Content-Type': 'application/json'}
         return (200, headers, '')
@@ -31,6 +30,7 @@ def rsps():
         callback=collect,
         content_type='application/json'
     )
+    
     return rsps
 
 
