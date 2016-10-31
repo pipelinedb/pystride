@@ -4,7 +4,7 @@ import re
 import requests
 from requests.auth import HTTPBasicAuth
 
-from stride.errors import StrideError
+from stride.errors import Error
 from stride.version import VERSION
 
 api_endpoint = 'https://api.stride.io/v1'
@@ -34,11 +34,11 @@ def check_path(method, path):
     for regex in valid_paths[method]:
         if regex.match(path):
             return
-    raise StrideError('path "%s" is not valid for method "%s"' %
-                      (path, method))
+    raise Error('path "%s" is not valid for method "%s"' %
+                (path, method))
 
 
-StrideResponse = namedtuple('StrideResponse', ['status_code', 'data'])
+Response = namedtuple('Response', ['status_code', 'data'])
 
 
 class Stride(object):
@@ -72,7 +72,7 @@ class Stride(object):
         fn = getattr(requests, method)
         r = fn('%s%s' % (self._endpoint, path), **kwargs)
         data = r.json() if r.text else None
-        return StrideResponse(r.status_code, data)
+        return Response(r.status_code, data)
 
     def get(self, path):
         return self._make_request('get', path)
@@ -106,4 +106,4 @@ class Stride(object):
                         yield json.loads(line)
             data = events
 
-        return StrideResponse(r.status_code, data)
+        return Response(r.status_code, data)

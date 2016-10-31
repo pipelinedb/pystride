@@ -6,7 +6,7 @@ from threading import Thread
 import time
 
 from stride.client import Stride
-from stride.errors import StrideError
+from stride.errors import Error
 
 timestamp_key = '$timestamp'
 id_key = '$id'
@@ -18,13 +18,13 @@ def set_timestamp(event, timestamp=None):
     if not timestamp:
         timestamp = datetime.utcnow()
     if not isinstance(timestamp, datetime):
-        raise StrideError("timestamp value must be of type datetime")
+        raise Error('timestamp value must be of type datetime')
     event[timestamp_key] = str(timestamp)
 
 
 def set_id(event, _id=None):
     if _id is None:
-        raise StrideError("id must not be null")
+        raise Error('id must not be null')
     event[id_key] = _id
 
 

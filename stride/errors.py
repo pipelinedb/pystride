@@ -1,2 +1,2 @@
-class StrideError(Exception):
+class Error(Exception):
     pass
