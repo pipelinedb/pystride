@@ -51,7 +51,7 @@ process = {
   'action': {'type': 'MATERIALIZE'}
 }
 stride.post('/process/myproc', process)
-# Response(status_code=200, data=None)
+# Response(status_code=201, data=None)
 ```
 
 ### put()
