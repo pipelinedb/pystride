@@ -53,13 +53,11 @@ class Collector(object):
             try:
                 r = self._client.post('/collect', buffered_events)
                 if r.status_code != 200:
-                    print r.status_code, r.data
                     log.error('collect request failed',
                               extra={'status_code': r.status_code,
                                      'data': r.data,
                                      'num_events': num_events})
             except Exception, e:
-                print e
                 log.exception('collect request failed',
                               extra={'num_events': num_events})
 
