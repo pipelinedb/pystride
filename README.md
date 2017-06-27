@@ -43,21 +43,26 @@ stride.get('/collect')
 ### post()
 
 * `url` - endpoint to `POST` to
-* `data` - data to post to server
+* `json` - JSON-serializable data to post to server
 
 ```python
+
 process = {
   'query': 'SELECT count(*) FROM app_events',
   'action': {'type': 'MATERIALIZE'}
 }
+
 stride.post('/process/myproc', process)
 # Response(status_code=201, data=None)
+
+stride.post('/collect/app_events', json={'x': 42})
+# Response(status_code=200, data=None)
 ```
 
 ### put()
 
 * `url` - endpoint to `PUT` to
-* `data` - data to post to server
+* `json` - JSON-serializable data to post to server
 
 ```python
 analyze = {
