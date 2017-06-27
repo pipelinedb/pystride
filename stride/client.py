@@ -7,7 +7,7 @@ from requests.auth import HTTPBasicAuth
 from stride.errors import Error
 from stride.version import VERSION
 
-api_endpoint = 'https://api.stride.io/v1'
+DEFAULT_API_ENDPOINT = 'https://api.stride.io/v1'
 valid_paths = {
     'get': [
         re.compile(r'^/(collect|process)(/[A-Za-z][A-Za-z0-9_]*)?$'),
@@ -40,10 +40,10 @@ class Stride(object):
     Stride is the wrapper for the Stride API
     '''
 
-  def __init__(self, api_key, timeout=30):
+  def __init__(self, api_key, endpoint=DEFAULT_API_ENDPOINT, timeout=30):
     self.api_key = api_key
     self._timeout = timeout
-    self._endpoint = api_endpoint
+    self._endpoint = endpoint
 
   def _get_request_kwargs(self):
     return {
