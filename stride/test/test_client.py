@@ -67,7 +67,7 @@ def test_request(rsps):
   s = Stride('key')
 
   with rsps:
-    r = s.post('/process/p1', data={'query': 'SELECT 1'})
+    r = s.post('/process/p1', json={'query': 'SELECT 1'})
     assert r.status_code == 200
     assert r.data == {'query': 'SELECT 1'}
 
@@ -80,7 +80,7 @@ def test_endpoint(rsps):
         'http://stride.io/another/endpoint/collect/stream',
         callback=lambda r: (200, {}, r.body),
         content_type='application/json')
-    r = s.post('/collect/stream', data={'x': 42})
+    r = s.post('/collect/stream', json={'x': 42})
 
     assert r.status_code == 200
     assert r.data == {'x': 42}

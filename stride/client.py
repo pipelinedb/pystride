@@ -1,5 +1,5 @@
 from collections import namedtuple
-import json
+import json as jsonm
 import re
 import requests
 from requests.auth import HTTPBasicAuth
@@ -56,12 +56,11 @@ class Stride(object):
         'timeout': self._timeout
     }
 
-  def _make_request(self, method, path, data=None):
+  def _make_request(self, method, path, json=None):
     check_path(method, path)
 
     kwargs = self._get_request_kwargs()
-    if data:
-      kwargs['json'] = data
+    kwargs['json'] = json
 
     fn = getattr(requests, method)
     r = fn('%s%s' % (self._endpoint, path), **kwargs)
@@ -71,11 +70,11 @@ class Stride(object):
   def get(self, path):
     return self._make_request('get', path)
 
-  def post(self, path, data):
-    return self._make_request('post', path, data=data)
+  def post(self, path, json):
+    return self._make_request('post', path, json=json)
 
-  def put(self, path, data):
-    return self._make_request('put', path, data=data)
+  def put(self, path, json):
+    return self._make_request('put', path, json=json)
 
   def delete(self, path):
     return self._make_request('delete', path)
@@ -97,7 +96,7 @@ class Stride(object):
         for line in r.iter_lines():
           line = line.strip()
           if line:
-            yield json.loads(line)
+            yield jsonm.loads(line)
 
       data = events
 
