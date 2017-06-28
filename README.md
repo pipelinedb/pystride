@@ -95,6 +95,12 @@ for event in res.data():
   do_something(event)
 ```
 
+`subscribe` also supports server-side sampling if you'd like to bound the number of events per second your client should receive. The following `subscribe` call will receive no more than 100 events per second:
+
+```python
+res = stride.subscribe('/collect/app_events', sample=100)
+```
+
 ## Collector
 
 ```python
