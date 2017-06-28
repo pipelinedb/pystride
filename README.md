@@ -3,7 +3,7 @@
 [![CircleCI](https://circleci.com/gh/pipelinedb/pystride.svg?style=shield)](https://circleci.com/gh/pipelinedb/pystride)
 [![PyPI version](https://badge.fury.io/py/stride.svg)](https://badge.fury.io/py/stride)
 
-Welcome to the Python client for Stride.
+Python client for [Stride](https://www.stride.io/docs).
 
 ```sh
 pip install stride
