@@ -79,12 +79,14 @@ class Stride(object):
   def delete(self, path):
     return self._make_request('delete', path)
 
-  def subscribe(self, path):
+  def subscribe(self, path, sample=None):
     # TODO(usmanm): Add retry and chunk_size support
     check_path('subscribe', path)
 
     kwargs = self._get_request_kwargs()
     kwargs['stream'] = True
+    if sample:
+      kwargs['params'] = {'sample': sample}
 
     r = requests.get('%s%s/subscribe' % (self._endpoint, path), **kwargs)
 

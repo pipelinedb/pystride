@@ -63,6 +63,33 @@ def test_subscribe(rsps):
     assert i == 99
 
 
+def test_subscribe_sample(rsps):
+  s = Stride('key')
+
+  def callback(request):
+    check_request(request)
+
+    events = [{'url': request.url}]
+    headers = {'Content-Type': 'application/json'}
+    data = '\r\n'.join(json.dumps(e) for e in events)
+    return (200, headers, data)
+
+  with rsps:
+    rsps.add_callback(
+        responses.GET,
+        'https://api.stride.io/v1/collect/subscribe_stream/subscribe',
+        callback=callback,
+        content_type='application/json')
+
+    r = s.subscribe('/collect/subscribe_stream', sample=42)
+    assert r.status_code == 200
+    events = r.data()
+    assert inspect.isgenerator(events)
+
+    event = list(events)[0]
+    assert event['url'] == 'https://api.stride.io/v1/collect/subscribe_stream/subscribe?sample=42'
+
+
 def test_request(rsps):
   s = Stride('key')
 
@@ -70,6 +97,7 @@ def test_request(rsps):
     r = s.post('/process/p1', json={'query': 'SELECT 1'})
     assert r.status_code == 200
     assert r.data == {'query': 'SELECT 1'}
+
 
 def test_endpoint(rsps):
   s = Stride('key', endpoint='http://stride.io/another/endpoint')
