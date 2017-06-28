@@ -13,10 +13,12 @@ pip install stride
 
 The library provides two modules:
 
-* `Stride` - a simple wrapper around the HTTP API
+* `Stride` - a simple wrapper around the [Stride HTTP API](https://www.stride.io/docs)
 * `Collector` - an asynchronous collector that batches events and sends them to the server periodically
 
 ## Stride
+
+To use `pystride` from your project, you just need to instantiate an instance of the `Stride` class using one of your [API keys](https://www.stride.io/docs#security):
 
 ```python
 from stride import Stride
@@ -26,7 +28,7 @@ stride.post('/collect/mystream', {'bojack': 'horseman'})
 # Response(status_code=200, data=None)
 ```
 
-There are a few main methods: `get`, `post`, `put`, `delete`, `subscribe`. All methods return a `Response` object which has two attributes:
+There are only a few main methods: `get`, `post`, `put`, `delete`, `subscribe`. All methods return a `Response` object which has two attributes:
 
 * `status_code` - the HTTP status code returned by the server
 * `data` - the JSON object returned by the server, or `None` if response was empty
