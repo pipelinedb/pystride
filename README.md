@@ -23,7 +23,7 @@ To use `pystride` from your project, you just need to instantiate an instance of
 ```python
 from stride import Stride
 
-stride = new Stride('apikey')
+stride = new Stride('secret_key')
 stride.post('/collect/mystream', {'bojack': 'horseman'})
 # Response(status_code=200, data=None)
 ```
