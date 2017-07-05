@@ -64,7 +64,13 @@ class Stride(object):
 
     fn = getattr(requests, method)
     r = fn('%s%s' % (self._endpoint, path), **kwargs)
-    data = r.json() if r.text else None
+    data = None
+
+    try:
+      data = r.json() if r.text else None
+    except:
+      data = {'error': 'response contained malformed json'}
+
     return Response(r.status_code, data)
 
   def get(self, path):

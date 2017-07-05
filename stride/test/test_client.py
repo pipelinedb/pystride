@@ -112,3 +112,18 @@ def test_endpoint(rsps):
 
     assert r.status_code == 200
     assert r.data == {'x': 42}
+
+
+def test_malformed_json(rsps):
+  s = Stride('key', endpoint='http://stride.io/v1')
+
+  with rsps:
+    rsps.add_callback(
+        responses.POST,
+        'http://stride.io/v1/collect/stream',
+        callback=lambda r: (502, {}, '{not valid json'),
+        content_type='application/json')
+    r = s.post('/collect/stream', json={'x': 42})
+
+    assert r.status_code == 502
+    assert r.data == {'error': 'response contained malformed json'}
