@@ -109,7 +109,7 @@ res = stride.subscribe('/collect/app_events', sample=100)
 
 While you can certainly [collect](https://www.stride.io/docs#collect) events by using the `post` method, you may not always want a blocking call such as `post` in your application. For asynchronous, non-blocking event collection, `pystride` also provides you with the `Collector` class to save you the hassle of writing async boilerplate around `pystride's` `post` method.
 
-It's usage is fairly straightforward:
+Its usage is fairly straightforward:
 
 ```python
 from stride import Collector
