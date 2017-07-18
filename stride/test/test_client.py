@@ -44,6 +44,11 @@ def rsps():
       'https://api.stride.io/v1/process/p1',
       callback=post,
       content_type='application/json')
+  rsps.add_callback(
+      responses.PUT,
+      'https://api.stride.io/v1/process/p1',
+      callback=post,
+      content_type='application/json')
   return rsps
 
 
@@ -97,6 +102,10 @@ def test_request(rsps):
     r = s.post('/process/p1', json={'query': 'SELECT 1'})
     assert r.status_code == 200
     assert r.data == {'query': 'SELECT 1'}
+
+    r = s.put('/process/p1', json={'ttl': {'duration': '1 day', 'column': 'minute'}})
+    assert r.status_code == 200
+    assert r.data == {'ttl': {'duration': '1 day', 'column': 'minute'}}
 
 
 def test_endpoint(rsps):

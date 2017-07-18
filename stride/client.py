@@ -18,7 +18,7 @@ valid_paths = {
         re.compile(r'^/(collect|analyze)$'),
         re.compile(r'^/analyze/[A-Za-z][A-Za-z0-9_]*/results$')
     ],
-    'put': [re.compile(r'^/analyze/[A-Za-z][A-Za-z0-9_]*$')],
+    'put': [re.compile(r'^/(analyze|process)/[A-Za-z][A-Za-z0-9_]*$')],
     'delete':
     [re.compile(r'^/(collect|process|analyze)/[A-Za-z][A-Za-z0-9_]*$')],
     'subscribe': [re.compile(r'^/(collect|process)/[A-Za-z][A-Za-z0-9_]*$')]
