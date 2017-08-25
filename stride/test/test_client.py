@@ -1,4 +1,6 @@
 from datetime import datetime
+import cStringIO
+import gzip
 import inspect
 import json
 import pytest
@@ -111,11 +113,18 @@ def test_request(rsps):
 def test_endpoint(rsps):
   s = Stride('key', endpoint='http://stride.io/another/endpoint')
 
+  def post(request):
+    if 'Content-Encoding' in request.headers and request.headers['Content-Encoding'] == 'gzip':
+      tmp = cStringIO.StringIO(request.body)
+      with gzip.GzipFile(mode='rb', fileobj=tmp) as gz:
+        request.body = gz.read()
+    return 200, {}, request.body
+
   with rsps:
     rsps.add_callback(
         responses.POST,
         'http://stride.io/another/endpoint/collect/stream',
-        callback=lambda r: (200, {}, r.body),
+        callback=post,
         content_type='application/json')
     r = s.post('/collect/stream', json={'x': 42})
 

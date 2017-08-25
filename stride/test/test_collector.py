@@ -1,4 +1,6 @@
 from datetime import datetime
+import cStringIO
+import gzip
 import json
 import pytest
 import responses
@@ -21,6 +23,12 @@ def rsps():
 
   def collect(request):
     check_request(request)
+
+    if 'Content-Encoding' in request.headers and request.headers['Content-Encoding'] == 'gzip':
+      tmp = cStringIO.StringIO(request.body)
+      with gzip.GzipFile(mode='rb', fileobj=tmp) as gz:
+        request.body = gz.read()
+
     rsps.requests.append(json.loads(request.body))
     headers = {'Content-Type': 'application/json'}
     return (200, headers, '')

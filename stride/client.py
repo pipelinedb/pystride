@@ -1,4 +1,6 @@
 from collections import namedtuple
+import cStringIO
+import gzip
 import json as jsonm
 import re
 import requests
@@ -60,7 +62,16 @@ class Stride(object):
     check_path(method, path)
 
     kwargs = self._get_request_kwargs()
-    kwargs['json'] = json
+
+    if re.match('^/collect', path):
+      # Compress raw events written to /collect endpoint
+      tmp = cStringIO.StringIO()
+      with gzip.GzipFile(mode='wb', fileobj=tmp) as gz:
+        gz.write(jsonm.dumps(json))
+      kwargs['data'] = tmp.getvalue()
+      kwargs['headers']['Content-Encoding'] = 'gzip'
+    else:
+      kwargs['data'] = jsonm.dumps(json)
 
     fn = getattr(requests, method)
     r = fn('%s%s' % (self._endpoint, path), **kwargs)
