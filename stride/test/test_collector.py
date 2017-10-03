@@ -1,7 +1,9 @@
+from collections import defaultdict
 from datetime import datetime
 import cStringIO
 import gzip
 import json
+import os
 import pytest
 import responses
 import time
@@ -29,13 +31,20 @@ def rsps():
       with gzip.GzipFile(mode='rb', fileobj=tmp) as gz:
         request.body = gz.read()
 
-    rsps.requests.append(json.loads(request.body))
+    stream = request.url.split('/')[-1]
+    rsps.requests.append((stream, json.loads(request.body)))
     headers = {'Content-Type': 'application/json'}
     return (200, headers, '')
 
   rsps.add_callback(
       responses.POST,
-      'https://api.stride.io/v1/collect',
+      'https://api.stride.io/v1/collect/stream0',
+      callback=collect,
+      content_type='application/json')
+
+  rsps.add_callback(
+      responses.POST,
+      'https://api.stride.io/v1/collect/stream1',
       callback=collect,
       content_type='application/json')
 
@@ -61,39 +70,46 @@ def test_collector(rsps):
     assert len(rsps.requests) == 0
 
     # Test batch_size
-    c.collect('stream0', *[{'$id': i} for i in xrange(5)])
-    c.collect('stream1', *[{'$id': i} for i in xrange(10)])
-    c.collect('stream0', *[{'$id': i} for i in xrange(10)])
+    c.collect('stream0', [{'$id': i} for i in xrange(5)])
+    c.collect('stream1', [{'$id': i} for i in xrange(10)])
+    c.collect('stream0', [{'$id': i} for i in xrange(10)])
 
     # We sleep a bit for thread to flush, but less than flush interval
     time.sleep(0.1)
 
-    assert len(rsps.requests) == 2
-    req0 = rsps.requests[0]
-    assert len(req0) == 2
-    assert len(req0.get('stream0', [])) == 5
-    assert len(req0.get('stream1', [])) == 10
-    req1 = rsps.requests[1]
-    assert len(req1) == 1
-    assert len(req1.get('stream0', [])) == 10
+    assert len(rsps.requests) == 3
+
+    events = defaultdict(list)
+    for stream, data in rsps.requests:
+      events[stream].extend(data)
+
+    assert len(events.get('stream0', [])) == 15
+    assert len(events.get('stream1', [])) == 10
 
     rsps.requests = []
 
     # Test flush interval
-    c.collect('stream0', *[{'$id': i} for i in xrange(5)])
+    c.collect('stream0', [{'$id': i} for i in xrange(5)])
 
     time.sleep(0.1)
     assert len(rsps.requests) == 0
     time.sleep(0.25)
     assert len(rsps.requests) == 1
     req0 = rsps.requests[0]
-    assert len(req0) == 1
-    assert len(req0.get('stream0', [])) == 5
+    assert len(req0) == 2
 
-  # Test drain
-  c.collect('stream0', *[{'$id': i} for i in xrange(5)])
-  c.stop()
-  assert len(rsps.requests) == 1
-  req0 = rsps.requests[0]
-  assert len(req0) == 1
-  assert len(req0.get('stream0', [])) == 5
+    events = defaultdict(list)
+    for stream, data in rsps.requests:
+      events[stream].extend(data)
+
+    assert len(events.get('stream0', [])) == 5
+
+    rsps.requests = []
+
+    # Test drain
+    c.collect('stream0', [{'$id': i} for i in xrange(5)])
+    c.stop()
+    assert len(rsps.requests) == 1
+    stream, events = rsps.requests[0]
+    assert stream == 'stream0'
+    assert len(events) == 5
