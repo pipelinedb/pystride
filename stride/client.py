@@ -70,7 +70,7 @@ class Stride(object):
         gz.write(jsonm.dumps(json))
       kwargs['data'] = tmp.getvalue()
       kwargs['headers']['Content-Encoding'] = 'gzip'
-    else:
+    elif json:
       kwargs['data'] = jsonm.dumps(json)
 
     fn = getattr(requests, method)

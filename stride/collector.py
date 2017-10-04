@@ -144,11 +144,3 @@ class Collector(object):
           timeout=kwargs.get('timeout', self._timeout))
     except Queue.Full:
       raise Error('queue is full, collector might be backlogged')
-
-
-if __name__ == '__main__':
-  c = Collector('test', endpoint='http://localhost:9000/v1')
-  c.start()
-  for n in range(100000):
-    c.collect('stream', {'x': 0})
-  c.stop()
